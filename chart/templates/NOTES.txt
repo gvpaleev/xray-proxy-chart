@@ -1,0 +1,32 @@
+xray-proxy установлен: {{ include "xray-proxy.fullname" . }} (namespace {{ .Release.Namespace }})
+
+SOCKS5-прокси доступен внутри кластера по адресу:
+    {{ include "xray-proxy.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.port }}
+
+Быстрая проверка (из пода с curl/telnet):
+    kubectl -n {{ .Release.Namespace }} run test --rm -it --image=alpine:3.21 -- sh
+    apk add curl
+    curl -x socks5h://{{ include "xray-proxy.fullname" . }}:{{ .Values.service.port }} https://httpbin.org/ip
+
+Port-forward для локального тестирования:
+    kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "xray-proxy.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+    curl -x socks5h://127.0.0.1:{{ .Values.service.port }} https://httpbin.org/ip
+
+Установка/обновление:
+    helm --kube-context <kube-context> -n {{ .Release.Namespace }} upgrade --install {{ .Release.Name }} ./chart \
+      --set xray.vless.userId=<VLESS_ID> \
+      --set xray.reality.publicKey=<PUBLIC_KEY>
+
+Образ тянется из Docker Hub: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+
+Наружу без ingress — NodePort:
+    helm upgrade --install {{ .Release.Name }} ./chart \
+      --set service.type=NodePort --set service.nodePort=31080 \
+      --set xray.vless.userId=<VLESS_ID> \
+      --set xray.reality.publicKey=<PUBLIC_KEY>
+
+{{- if or (eq .Values.xray.vless.userId "REPLACE_ME") (eq .Values.xray.reality.publicKey "REPLACE_ME") }}
+
+ВНИМАНИЕ: xray.vless.userId и/или xray.reality.publicKey не заданы (REPLACE_ME).
+Передайте реальные значения через --set или отдельный values-файл при деплое.
+{{- end }}

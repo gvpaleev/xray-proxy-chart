@@ -1,0 +1,11 @@
+apiVersion: v2
+name: xray-proxy
+description: Xray-core SOCKS5-прокси с исходящим VLESS+Reality
+type: application
+version: 1.0.0
+appVersion: "26.3.27"
+maintainers:
+  - name: gvpaleevkz
+    url: https://github.com/gvpaleevkz
+sources:
+  - https://github.com/gvpaleevkz/xray-proxy-chart

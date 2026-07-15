@@ -1,0 +1,67 @@
+# Default values for xray-proxy.
+
+image:
+  # Docker Hub image: https://hub.docker.com/repository/docker/gvpaleevkz/xray-proxy/general
+  repository: docker.io/gvpaleevkz/xray-proxy
+  # Image tag. Empty = chart appVersion (26.3.27).
+  tag: ""
+  pullPolicy: Always
+
+replicaCount: 1
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  # ClusterIP — SOCKS5 used within cluster (tor-proxy, etc.).
+  # For external access use NodePort and set nodePort below.
+  type: ClusterIP
+  port: 1080
+  # Fixed port for type: NodePort (empty = cluster-assigned).
+  nodePort: ""
+
+# Xray settings (VLESS+Reality outbound)
+xray:
+  logLevel: warning
+
+  dns:
+    servers:
+      - 1.1.1.1
+      - 8.8.8.8
+
+  socksPort: 1080
+
+  vless:
+    address: 213.217.31.253
+    port: 443
+    # !! Replace with real VLESS ID at deploy time (--set xray.vless.userId=...)
+    userId: "REPLACE_ME"
+    encryption: none
+    flow: xtls-rprx-vision
+
+  reality:
+    serverName: cm.a.mts.ru
+    fingerprint: ios
+    # !! Replace with real publicKey at deploy time (--set xray.reality.publicKey=...)
+    publicKey: "REPLACE_ME"
+    shortId: "01"
+    spiderX: ""
+
+  routing:
+    # All inbound traffic from socks-in goes to proxy-outbound
+    sourceTag: socks-in
+    outboundTag: proxy
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
