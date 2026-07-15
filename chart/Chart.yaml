@@ -9,3 +9,16 @@ maintainers:
     url: https://github.com/gvpaleev
 sources:
   - https://github.com/gvpaleev/xray-proxy-chart
+annotations:
+  artifacthub.io/license: MIT
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial release — SOCKS5 proxy with VLESS+Reality outbound
+  artifacthub.io/images: |
+    - name: xray-proxy
+      image: docker.io/gvpaleevkz/xray-proxy:26.3.27
+  artifacthub.io/links: |
+    - name: Docker Hub
+      url: https://hub.docker.com/repository/docker/gvpaleevkz/xray-proxy/general
+    - name: Xray-core
+      url: https://github.com/XTLS/Xray-core
