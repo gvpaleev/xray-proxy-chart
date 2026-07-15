@@ -3,7 +3,7 @@
 image:
   # Docker Hub image: https://hub.docker.com/repository/docker/gvpaleevkz/xray-proxy/general
   repository: docker.io/gvpaleevkz/xray-proxy
-  # Image tag. Empty = chart appVersion (26.3.27).
+  # Image tag. Empty = chart appVersion (v1.0.0).
   tag: ""
   pullPolicy: Always
 

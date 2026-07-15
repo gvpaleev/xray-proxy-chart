@@ -2,8 +2,8 @@ apiVersion: v2
 name: xray-proxy
 description: Xray-core SOCKS5-прокси с исходящим VLESS+Reality
 type: application
-version: 1.0.2
-appVersion: "26.3.27"
+version: 1.0.3
+appVersion: "v1.0.0"
 maintainers:
   - name: gvpaleev
     url: https://github.com/gvpaleev
@@ -12,11 +12,11 @@ sources:
 annotations:
   artifacthub.io/license: MIT
   artifacthub.io/changes: |
-    - kind: added
-      description: Initial release — SOCKS5 proxy with VLESS+Reality outbound
+    - kind: fixed
+      description: Fix image tag reference in annotations (26.3.27 → v1.0.0)
   artifacthub.io/images: |
     - name: xray-proxy
-      image: docker.io/gvpaleevkz/xray-proxy:26.3.27
+      image: docker.io/gvpaleevkz/xray-proxy:v1.0.0
   artifacthub.io/links: |
     - name: Docker Hub
       url: https://hub.docker.com/repository/docker/gvpaleevkz/xray-proxy/general
