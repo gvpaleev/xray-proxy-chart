@@ -2,9 +2,18 @@
 
 SOCKS5-прокси на [Xray-core](https://github.com/XTLS/Xray-core) с исходящим VLESS+Reality, упакованный в Helm-чарт для Kubernetes.
 
+OCI-репозиторий: `oci://ghcr.io/gvpaleev/xray-proxy`
 Образ: [`docker.io/gvpaleevkz/xray-proxy`](https://hub.docker.com/repository/docker/gvpaleevkz/xray-proxy/general)
 
-## Быстрая установка
+## Быстрая установка из OCI
+
+```bash
+helm upgrade --install xray-proxy oci://ghcr.io/gvpaleev/xray-proxy \
+  --set xray.vless.userId=<VLESS_ID> \
+  --set xray.reality.publicKey=<PUBLIC_KEY>
+```
+
+## Локальная установка
 
 ```bash
 helm upgrade --install xray-proxy ./chart \
@@ -15,7 +24,7 @@ helm upgrade --install xray-proxy ./chart \
 ## Установка с NodePort (внешний доступ)
 
 ```bash
-helm upgrade --install xray-proxy ./chart \
+helm upgrade --install xray-proxy oci://ghcr.io/gvpaleev/xray-proxy \
   --set service.type=NodePort \
   --set service.nodePort=31080 \
   --set xray.vless.userId=<VLESS_ID> \
@@ -25,9 +34,23 @@ helm upgrade --install xray-proxy ./chart \
 ## Проверка
 
 ```bash
-# Port-forward для локального тестирования
 kubectl port-forward svc/xray-proxy 1080:1080
 curl -x socks5h://127.0.0.1:1080 https://httpbin.org/ip
+```
+
+## Artifact Hub
+
+В Artifact Hub добавить как OCI-репозиторий:
+`oci://ghcr.io/gvpaleev/xray-proxy`
+
+Для статуса Verified Publisher — после регистрации репозитория запушить `artifacthub-repo.yml` с `repositoryID`:
+
+```bash
+regctl artifact put \
+  --artifact-type application/vnd.cncf.artifacthub.config.v1+yaml \
+  -f artifacthub-repo.yml \
+  --file-media-type "application/vnd.cncf.artifacthub.repository-metadata.layer.v1.yaml" \
+  ghcr.io/gvpaleev/xray-proxy:artifacthub.io
 ```
 
 ## Параметры

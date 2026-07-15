@@ -6,38 +6,22 @@ on:
       - v*
 
 permissions:
-  contents: write
+  contents: read
+  packages: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Install Helm
         uses: azure/setup-helm@v4
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1
-        with:
-          charts_dir: .
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Login to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Publish artifacthub-repo.yml to gh-pages
-        if: hashFiles('artifacthub-repo.yml') != ''
+      - name: Package and push
         run: |
-          cp artifacthub-repo.yml /tmp/artifacthub-repo.yml
-          git fetch origin gh-pages || true
-          git checkout gh-pages || git checkout --orphan gh-pages
-          cp /tmp/artifacthub-repo.yml .
-          git add artifacthub-repo.yml
-          git diff --cached --quiet || git commit -m "Add artifacthub-repo.yml"
-          git push origin gh-pages
+          helm package ./chart
+          helm push xray-proxy-*.tgz oci://ghcr.io/${{ github.repository_owner }}
