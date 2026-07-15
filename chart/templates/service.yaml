@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "xray-proxy.fullname" . }}
+  labels:
+    {{- include "xray-proxy.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: socks5
+      port: {{ .Values.service.port }}
+      targetPort: socks5
+      protocol: TCP
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "xray-proxy.selectorLabels" . | nindent 4 }}
